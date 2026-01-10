@@ -9,7 +9,7 @@ from utils.common import instantiate_from_config, load_state_dict
 
 def main() -> None:
     parser = ArgumentParser()
-    parser.add_argument("--config", type=str, default='./configs/train_diffeic.yaml')
+    parser.add_argument("--config", type=str, default='./configs/train_local_diffeic.yaml')
     args = parser.parse_args()
     
     config = OmegaConf.load(args.config)
