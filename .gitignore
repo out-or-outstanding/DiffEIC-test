@@ -1,0 +1,9 @@
+# Ignore weight directory and its contents
+weight/
+
+# Ignore images directory and its contents
+images/
+
+# Ignore Python cache files and directories
+__pycache__/
+*.pyc

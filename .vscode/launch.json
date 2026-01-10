@@ -1,0 +1,24 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python 调试程序: inference_partition.py 带参数",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/inference_partition.py", // 替换为train.py的实际路径，${workspaceFolder}是当前工作区根目录
+            "console": "integratedTerminal",
+            "args": [
+                "--ckpt_sd", "./weight/v2-1_512-ema-pruned.ckpt",
+                "--ckpt_lc", "./weight/1_2_1/lc.ckpt",
+                "--config", "configs/model/diffeic.yaml",
+                "--input", "images/test/1822067_f8836ff595_b_0000.png",
+                "--output", "images/output/1.png",
+                "--steps", "50",
+                "--device", "cuda"
+            ]
+        },
+    ]
+}
