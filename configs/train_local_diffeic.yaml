@@ -25,7 +25,7 @@ lightning:
     # Max number of training steps (batches).
     max_steps: 300001
     # Validation frequency in terms of training steps.
-    val_check_interval: 5
+    val_check_interval: 1
     log_every_n_steps: 100
     # Accumulate gradients from multiple batches so as to increase batch size.
     accumulate_grad_batches: 1

@@ -9,7 +9,7 @@ dataset:
     use_rot: False
 
 data_loader:
-  batch_size: 4
+  batch_size: 1
   shuffle: true
   num_workers: 8
   drop_last: true
