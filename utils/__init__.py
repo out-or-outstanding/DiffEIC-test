@@ -1,0 +1,1 @@
+from .common import instantiate_from_config

@@ -1,0 +1,129 @@
+target: model.diffeic_with_txt_background.DiffEICWithPriorAndText
+params:
+  # 基础参数
+  linear_start: 0.00085
+  linear_end: 0.0120
+  num_timesteps_cond: 1
+  log_every_t: 200
+  timesteps: 1000
+  first_stage_key: "jpg"
+  cond_stage_key: "txt"
+  control_key: "hint"
+  image_size: 64
+  channels: 4
+  cond_stage_trainable: false
+  conditioning_key: crossattn
+  monitor: val/loss_simple_ema
+  scale_factor: 0.18215
+  use_ema: False
+  
+  # Stable Diffusion锁定参数
+  sd_locked: True
+  
+  # 学习率和权重
+  learning_rate: 1e-4
+  aux_learning_rate: 1e-3
+  l_bpp_weight: 1.0
+  l_guide_weight: 1.0
+  
+  # 同步和预训练权重
+  sync_path: ./weight/v2-1_512-ema-pruned.ckpt  # StableDiffusion v2.1权重路径
+  synch_control: true
+  ckpt_path_pre: ~  # 指向diffeic的权重文件
+  
+  # 控制模型配置
+  control_stage_config:
+    target: model.diffeic.CDDM
+    params:
+      use_checkpoint: True
+      image_size: 32
+      in_channels: 4
+      out_channels: 4
+      hint_channels: 4
+      model_channels: 320
+      attention_resolutions: [ 4, 2, 1 ]
+      num_res_blocks: 2
+      channel_mult: [ 1, 2, 4, 4 ]
+      num_head_channels: 16
+      use_spatial_transformer: True
+      use_linear_in_transformer: True
+      transformer_depth: 1
+      context_dim: 1024
+      legacy: False
+      control_scale: 1.0
+      control_model_ratio: 0.2
+  
+  # UNet配置
+  unet_config:
+    target: ldm.modules.diffusionmodules.openaimodel.UNetModel
+    params:
+      use_checkpoint: True
+      image_size: 32
+      in_channels: 4
+      out_channels: 4
+      model_channels: 320
+      attention_resolutions: [ 4, 2, 1 ]
+      num_res_blocks: 2
+      channel_mult: [ 1, 2, 4, 4 ]
+      num_head_channels: 64
+      use_spatial_transformer: True
+      use_linear_in_transformer: True
+      transformer_depth: 1
+      context_dim: 1024
+      legacy: False
+  
+  # 第一阶段配置
+  first_stage_config:
+    target: ldm.models.autoencoder.AutoencoderKL
+    params:
+      embed_dim: 4
+      monitor: val/rec_loss
+      ddconfig:
+        double_z: true
+        z_channels: 4
+        resolution: 256
+        in_channels: 3
+        out_ch: 3
+        ch: 128
+        ch_mult: [ 1, 2, 4, 4 ]
+        num_res_blocks: 2
+        attn_resolutions: []
+        dropout: 0.0
+      lossconfig:
+        target: torch.nn.Identity
+  
+  # 条件阶段配置
+  cond_stage_config:
+    target: ldm.modules.encoders.modules.FrozenOpenCLIPEmbedder
+    params:
+      freeze: True
+      layer: "penultimate"
+  
+  # 预处理配置
+  preprocess_config:
+    target: model.lfgcm.LFGCM
+    params:
+      in_nc: 3
+      enc_mid: [64,128,192,192]
+      out_nc: 4
+      N: 192
+      M: 320
+      prior_nc: 64
+      sft_ks: 3
+      slice_num: 10
+      slice_ch: [8,8,8,8,16,16,32,32,96,96]
+  
+  # 计算指标配置
+  calculate_metrics:
+    psnr:
+      type: psnr
+      crop_border: 0
+      test_y_channel: false
+    
+    ms_ssim:
+      type: ms_ssim
+      test_y_channel: false
+      
+    lpips:
+      type: lpips
+      better: lower
