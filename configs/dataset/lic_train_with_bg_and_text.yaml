@@ -2,7 +2,7 @@ dataset:
   target: dataset.licdataset_with_bg_and_text.LICDatasetWithBGAndText
   params:
     file_list: ./datalists/train_with_bg_and_text.list
-    out_size: 512
+    out_size: 256
     crop_type: random
     use_hflip: True
     use_rot: False

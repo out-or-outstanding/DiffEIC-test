@@ -23,7 +23,7 @@ class LICDatasetWithBGAndText(Dataset):
         
         # Load data list
         with open(file_list, 'r') as f:
-            self.data_list = [line.strip().split('\t') for line in f.readlines()]
+            self.data_list = [line.strip().split('|') for line in f.readlines()]
         
         # Define image transforms (仅用于预处理，不包含ToTensor)
         self.transform = self._get_transform()

@@ -61,7 +61,8 @@ class Upsample(nn.Module):
                                         padding=1)
 
     def forward(self, x):
-        x = torch.nn.functional.interpolate(x, scale_factor=2.0, mode="nearest")
+        # 修改插值模式为支持BFloat16的类型
+        x = torch.nn.functional.interpolate(x, scale_factor=2.0, mode="bilinear", align_corners=False)
         if self.with_conv:
             x = self.conv(x)
         return x
